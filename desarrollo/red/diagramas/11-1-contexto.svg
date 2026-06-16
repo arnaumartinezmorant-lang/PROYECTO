@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="560" viewBox="0 0 920 560" font-family="Helvetica, Arial, sans-serif">
+<defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 z" fill="#333333"/></marker></defs>
+<rect x="0" y="0" width="920" height="560" fill="white"/>
+<text x="460" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">Apartado 11.1 - Diagrama de contexto</text>
+<rect x="350" y="230" width="220" height="100" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+<text x="460" y="278.5" text-anchor="middle" font-size="13" font-weight="bold" fill="#222">SISTEMA</text>
+<text x="460" y="294.5" text-anchor="middle" font-size="13" font-weight="bold" fill="#222">INTRANET CORPORATIVA</text>
+<ellipse cx="135" cy="95" rx="75" ry="35" fill="#f5f5f5" stroke="#666666" stroke-width="1.5"/>
+<text x="135" y="93.5" text-anchor="middle" font-size="12" fill="#222">Usuarios</text>
+<text x="135" y="108.5" text-anchor="middle" font-size="12" fill="#222">Externos</text>
+<ellipse cx="775" cy="95" rx="75" ry="35" fill="#f5f5f5" stroke="#666666" stroke-width="1.5"/>
+<text x="775" y="93.5" text-anchor="middle" font-size="12" fill="#222">Usuarios</text>
+<text x="775" y="108.5" text-anchor="middle" font-size="12" fill="#222">Internos</text>
+<ellipse cx="135" cy="455" rx="75" ry="35" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/>
+<text x="135" y="453.5" text-anchor="middle" font-size="12" fill="#222">Administracion</text>
+<text x="135" y="468.5" text-anchor="middle" font-size="12" fill="#222">/ DevOps</text>
+<ellipse cx="775" cy="455" rx="75" ry="35" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.5"/>
+<text x="775" y="453.5" text-anchor="middle" font-size="12" fill="#222">Servicios</text>
+<text x="775" y="468.5" text-anchor="middle" font-size="12" fill="#222">externos</text>
+<line x1="196.486" y1="130" x2="372.162" y2="230" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="214.324" y="169" width="140" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="284.324" y="180" text-anchor="middle" font-size="11" fill="#333333">consulta web (HTTPS)</text>
+<line x1="715.405" y1="130" x2="545.135" y2="230" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="542.77" y="169" width="175" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="630.27" y="180" text-anchor="middle" font-size="11" fill="#333333">crea/consulta incidencias</text>
+<line x1="200" y1="420" x2="367.143" y2="330" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="238.071" y="364" width="91" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="283.571" y="375" text-anchor="middle" font-size="11" fill="#333333">gestion (VPN)</text>
+<line x1="550" y1="330" x2="712" y2="420" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="550.5" y="364" width="161" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="631" y="375" text-anchor="middle" font-size="11" fill="#333333">correo / notificaciones</text>
+</svg>
