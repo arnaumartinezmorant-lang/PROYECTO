@@ -1,0 +1,51 @@
+# =============================================================================
+# Laboratorio funcional: UNA maquina con varios contenedores Docker.
+# Reproduce de forma simplificada la arquitectura corporativa de la memoria:
+#   - lb       : balanceador de carga / proxy inverso (nginx)  -> rol de LB01/NLB
+#   - web01    : servidor web/aplicacion frontal               -> rol de WEB01
+#   - web02    : servidor web/aplicacion frontal (replica)     -> rol de WEB02
+#   - db       : base de datos                                  -> rol de SQL01
+#   - monitor  : monitorizacion (metricas y disponibilidad)
+#
+# Levantar:   docker compose up -d --build
+# Probar:     curl -k https://localhost/whoami   (alterna entre WEB01 y WEB02)
+# Parar web01:docker compose stop web01           (el servicio sigue por WEB02)
+# =============================================================================
+services:
+
+  web01:
+    build: { context: ., dockerfile: app/Dockerfile }
+    environment: { APP_NODE: WEB01, DB_PATH: /data/intranet.db, PORT: 8001 }
+    volumes: [ "dbdata:/data" ]
+    networks: [ backend ]
+
+  web02:
+    build: { context: ., dockerfile: app/Dockerfile }
+    environment: { APP_NODE: WEB02, DB_PATH: /data/intranet.db, PORT: 8001 }
+    volumes: [ "dbdata:/data" ]
+    networks: [ backend ]
+    depends_on: [ web01 ]
+
+  lb:
+    image: nginx:alpine
+    ports: [ "443:443", "80:80" ]
+    volumes:
+      - "./lb/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+      - "./lb/certs:/etc/nginx/certs:ro"
+    networks: [ backend ]
+    depends_on: [ web01, web02 ]
+
+  monitor:
+    image: python:3.11-slim
+    working_dir: /monitor
+    volumes: [ "./monitor:/monitor" ]
+    command: ["python", "monitor.py"]
+    networks: [ backend ]
+    depends_on: [ lb ]
+
+volumes:
+  dbdata:
+
+networks:
+  backend:
+    driver: bridge

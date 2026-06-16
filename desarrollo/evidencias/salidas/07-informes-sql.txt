@@ -1,0 +1,33 @@
+estado    total
+--------  -----
+Cerrada   5    
+Resuelta  1    
+Abierta   1    
+prioridad  total
+---------  -----
+1          2    
+2          3    
+3          2    
+horas_medias_resolucion
+-----------------------
+6.13                   
+tecnico             gestionadas
+------------------  -----------
+tecnico@corp.local  6          
+fecha                accion         comentario          autor             
+-------------------  -------------  ------------------  ------------------
+2026-06-16 22:36:17  cambio_estado  Estado -> Resuelta  tecnico@corp.local
+2026-06-16 22:36:17  creacion       Incidencia creada   oficina@corp.local
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   oficina@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   admin@corp.local  
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   oficina@corp.local
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   tecnico@corp.local
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   admin@corp.local  
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   oficina@corp.local
+-- comprobacion de cifrado en reposo: el .enc no debe contener texto plano --
+OK: no se encuentra texto en claro en el backup cifrado

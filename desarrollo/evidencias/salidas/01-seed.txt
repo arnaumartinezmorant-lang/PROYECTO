@@ -1,0 +1,4 @@
+  [+] usuario tecnico@corp.local creado (rol Tecnico, id=1)
+  [+] usuario admin@corp.local creado (rol Administracion, id=2)
+  [+] usuario oficina@corp.local creado (rol Oficina, id=3)
+  [+] 6 incidencias de demostracion cargadas

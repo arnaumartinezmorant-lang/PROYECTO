@@ -1,0 +1,10 @@
+== LB health ==
+LB OK
+== whoami x6 (debe alternar WEB01/WEB02) ==
+  peticion  1 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  3 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  4 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  5 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  6 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  reparto: WEB01=3, WEB02=3
