@@ -1,0 +1,22 @@
+Estado inicial: ambos nodos arriba
+  peticion  1 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  2 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  3 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  4 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  reparto: WEB01=2, WEB02=2
+>> Apagamos WEB01 (kill 425) ...
+Tras la caida de WEB01, el servicio SIGUE (debe responder solo WEB02):
+  peticion  1 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  3 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  4 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  reparto: WEB02=4
+>> Rearrancamos WEB01 ...
+WEB01 recuperado, vuelve a repartirse la carga:
+  peticion  1 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  3 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  4 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  5 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  6 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  reparto: WEB01=3, WEB02=3

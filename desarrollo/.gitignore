@@ -1,0 +1,8 @@
+# Base de datos en tiempo de ejecucion (se regenera con seed.py / run-lab.sh)
+app/data/
+*.db
+*.db-wal
+*.db-shm
+
+__pycache__/
+*.pyc

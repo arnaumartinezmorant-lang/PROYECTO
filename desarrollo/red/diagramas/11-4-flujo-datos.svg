@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="470" viewBox="0 0 1040 470" font-family="Helvetica, Arial, sans-serif">
+<defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 z" fill="#333333"/></marker></defs>
+<rect x="0" y="0" width="1040" height="470" fill="white"/>
+<text x="520" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">Apartado 11.4 - Diagrama de flujo de datos</text>
+<rect x="40" y="200" width="110" height="50" rx="8" fill="#f5f5f5" stroke="#666666" stroke-width="1.5"/>
+<text x="95" y="231" text-anchor="middle" font-size="12" fill="#222">Usuario</text>
+<rect x="210" y="195" width="130" height="60" rx="8" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+<text x="275" y="223.5" text-anchor="middle" font-size="12" fill="#222">LB01</text>
+<text x="275" y="238.5" text-anchor="middle" font-size="12" fill="#222">Balanceador</text>
+<rect x="400" y="195" width="150" height="60" rx="8" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+<text x="475" y="223.5" text-anchor="middle" font-size="12" fill="#222">WEB01 / WEB02</text>
+<text x="475" y="238.5" text-anchor="middle" font-size="12" fill="#222">(servidor web)</text>
+<rect x="400" y="60" width="150" height="60" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/>
+<text x="475" y="88.5" text-anchor="middle" font-size="12" fill="#222">DC1 / DC2</text>
+<text x="475" y="103.5" text-anchor="middle" font-size="12" fill="#222">AD DS + DNS</text>
+<rect x="610" y="195" width="150" height="60" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+<text x="685" y="223.5" text-anchor="middle" font-size="12" fill="#222">Listener SQL</text>
+<text x="685" y="238.5" text-anchor="middle" font-size="12" fill="#222">10.10.10.20</text>
+<rect x="820" y="130" width="170" height="50" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+<text x="905" y="161" text-anchor="middle" font-size="12" fill="#222">SQL01 (activo)</text>
+<rect x="820" y="215" width="170" height="50" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+<text x="905" y="246" text-anchor="middle" font-size="12" fill="#222">SQL02 (replica)</text>
+<rect x="820" y="320" width="170" height="55" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+<text x="905" y="346" text-anchor="middle" font-size="12" fill="#222">BKP01 + offsite</text>
+<text x="905" y="361" text-anchor="middle" font-size="12" fill="#222">cifrado</text>
+<line x1="150" y1="225" x2="210" y2="225" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="138" y="214" width="84" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="180" y="225" text-anchor="middle" font-size="11" fill="#333333">1) HTTPS 443</text>
+<line x1="340" y1="225" x2="400" y2="225" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="324.5" y="214" width="91" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="370" y="225" text-anchor="middle" font-size="11" fill="#333333">2) elige nodo</text>
+<line x1="475" y1="195" x2="475" y2="120" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="433" y="146.5" width="84" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="475" y="157.5" text-anchor="middle" font-size="11" fill="#333333">3) LDAPS 636</text>
+<line x1="550" y1="225" x2="610" y2="225" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="555.5" y="214" width="49" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="580" y="225" text-anchor="middle" font-size="11" fill="#333333">4) 1433</text>
+<line x1="760" y1="201.136" x2="826.429" y2="180" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="905" y1="180" x2="905" y2="215" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="880.5" y="186.5" width="49" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="905" y="197.5" text-anchor="middle" font-size="11" fill="#333333">5) 5022</text>
+<line x1="905" y1="180" x2="905" y2="320" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="884" y="239" width="42" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="905" y="250" text-anchor="middle" font-size="11" fill="#333333">6) 445</text>
+<line x1="400" y1="225" x2="150" y2="225" stroke="#82b366" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="212" y="214" width="126" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="275" y="225" text-anchor="middle" font-size="11" fill="#82b366">7) respuesta HTTPS</text>
+</svg>

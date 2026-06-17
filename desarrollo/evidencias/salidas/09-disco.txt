@@ -1,0 +1,8 @@
+[disk] 2026-06-16 22:36:31 umbral de alerta = 85%
+  OK       uso= 23% mont=/ -> OK
+  OK       uso=  1% mont=/tmp -> OK
+  OK       uso=  1% mont=/projects/sandbox -> OK
+  OK       uso=  0% mont=/dev -> OK
+  OK       uso=  0% mont=/dev/tty -> OK
+  OK       uso= 23% mont=/projects -> OK
+  OK       uso=  0% mont=/dev/shm -> OK

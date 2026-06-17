@@ -1,0 +1,5 @@
+[restore] descifrando /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/local/intranet_20260616_223625.bak.enc
+[restore] base restaurada en /tmp/intranet_restaurada.db
+[restore] integrity_check = ok
+[restore] usuarios recuperados = 4
+[restore] RTO medido = 0 s

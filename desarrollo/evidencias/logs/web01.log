@@ -1,0 +1,14 @@
+[22:36:21] Nodo WEB01 escuchando en :18001 (DB=/projects/sandbox/PROYECTO/desarrollo/app/data/intranet.db)
+127.0.0.1 - - [16/Jun/2026 22:36:21] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:23] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:25] node=WEB01 "GET /whoami HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:25] node=WEB01 "GET /whoami HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:25] node=WEB01 "GET /whoami HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:25] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:25] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:26] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:27] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:27] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:29] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:29] node=WEB01 "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jun/2026 22:36:30] node=WEB01 "GET /health HTTP/1.1" 200 -

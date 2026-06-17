@@ -1,0 +1,164 @@
+### 0. Entorno
+Python 3.9.25
+sqlite 3.40.0
+gpg (GnuPG) 2.3.7
+### 0b. Limpiar procesos huerfanos de ejecuciones previas
+### 1. Sembrar base de datos
+  [+] usuario tecnico@corp.local creado (rol Tecnico, id=1)
+  [+] usuario admin@corp.local creado (rol Administracion, id=2)
+  [+] usuario oficina@corp.local creado (rol Oficina, id=3)
+  [+] 6 incidencias de demostracion cargadas
+### 2. Arrancar nodos WEB01 (:18001) y WEB02 (:18002) y el balanceador (:18080)
+Balanceador listo tras 2s
+### 3. Comprobacion de salud y reparto de carga (whoami x6)
+== LB health ==
+LB OK
+== whoami x6 (debe alternar WEB01/WEB02) ==
+  peticion  1 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  3 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  4 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  5 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  6 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  reparto: WEB01=3, WEB02=3
+### 4. Plan de pruebas de caja negra
+[PASA] TC-01   Registro de usuario con datos validos
+        esperado: HTTP 201 + mensaje de confirmacion
+        real:     HTTP 201 {"id": 4, "mensaje": "Usuario registrado"}
+[PASA] TC-06   Registro con correo ya existente (rechazado)
+        esperado: HTTP 409 'El correo ya existe'
+        real:     HTTP 409 {"error": "El correo ya existe"}
+[PASA] TC-02   Login con contrasena incorrecta (denegado)
+        esperado: HTTP 401 'Error de acceso'
+        real:     HTTP 401 {"error": "Error de acceso"}
+[PASA] TC-07   Login con usuario inexistente (denegado)
+        esperado: HTTP 401
+        real:     HTTP 401 {"error": "Error de acceso"}
+[PASA] TC-03   Crear incidencia con descripcion vacia (bloqueado)
+        esperado: HTTP 400 campos obligatorios
+        real:     HTTP 400 {"error": "Los campos titulo y descripcion son obligatorios"}
+[PASA] TC-08   Crear incidencia con prioridad no valida (bloqueado)
+        esperado: HTTP 400 prioridad fuera de rango
+        real:     HTTP 400 {"error": "Prioridad fuera de rango (1-3)"}
+[PASA] TC-01b  Crear incidencia valida
+        esperado: HTTP 201 + id
+        real:     HTTP 201 {"id": 7, "mensaje": "Incidencia creada"}
+[PASA] TC-04   Cambio de estado por usuario sin rol Tecnico (bloqueado)
+        esperado: HTTP 403 permisos insuficientes
+        real:     HTTP 403 {"error": "Permisos insuficientes: se requiere rol Tecnico"}
+[PASA] TC-04b  Cambio de estado por Tecnico (permitido)
+        esperado: HTTP 200
+        real:     HTTP 200 {"mensaje": "Estado actualizado"}
+[PASA] TC-05   Consulta del historial de la incidencia
+        esperado: HTTP 200 + >=2 entradas (creacion y cambio de estado)
+        real:     HTTP 200 con 2 entradas
+[PASA] TC-10   Acceso a zona privada sin sesion (restringido)
+        esperado: HTTP 401 No autenticado
+        real:     HTTP 401 {"error": "No autenticado"}
+[PASA] TC-13   Balanceo de carga reparte entre los dos frontales
+        esperado: respuestas servidas por WEB01 y WEB02
+        real:     nodos observados: ['WEB01', 'WEB02']
+
+==================== RESUMEN ====================
+Total casos: 12  |  PASAN: 12  |  FALLAN: 0
+=================================================
+### 5. Prueba de FAILOVER (alta disponibilidad)
+Estado inicial: ambos nodos arriba
+  peticion  1 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  2 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  3 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  4 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  reparto: WEB01=2, WEB02=2
+>> Apagamos WEB01 (kill 425) ...
+Tras la caida de WEB01, el servicio SIGUE (debe responder solo WEB02):
+  peticion  1 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  3 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  4 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  reparto: WEB02=4
+>> Rearrancamos WEB01 ...
+WEB01 recuperado, vuelve a repartirse la carga:
+  peticion  1 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  3 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  4 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  peticion  5 -> servida por WEB01 (upstream 127.0.0.1:18001)
+  peticion  6 -> servida por WEB02 (upstream 127.0.0.1:18002)
+  reparto: WEB01=3, WEB02=3
+### 6. Copia de seguridad 3-2-1 cifrada + restauracion
+[backup] 2026-06-16 22:36:25 iniciando copia de /projects/sandbox/PROYECTO/desarrollo/app/data/intranet.db
+[backup] dump consistente generado (61440 bytes)
+[backup] fichero cifrado (AES-256): /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/local/intranet_20260616_223625.bak.enc
+[backup] replica offsite: /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/offsite/intranet_20260616_223625.bak.enc
+[backup] 2026-06-16 22:36:25 copia 3-2-1 completada correctamente
+[restore] descifrando /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/local/intranet_20260616_223625.bak.enc
+[restore] base restaurada en /tmp/intranet_restaurada.db
+[restore] integrity_check = ok
+[restore] usuarios recuperados = 4
+[restore] RTO medido = 0 s
+### 7. Informes de explotacion (SQL de negocio)
+estado    total
+--------  -----
+Cerrada   5    
+Resuelta  1    
+Abierta   1    
+prioridad  total
+---------  -----
+1          2    
+2          3    
+3          2    
+horas_medias_resolucion
+-----------------------
+6.13                   
+tecnico             gestionadas
+------------------  -----------
+tecnico@corp.local  6          
+fecha                accion         comentario          autor             
+-------------------  -------------  ------------------  ------------------
+2026-06-16 22:36:17  cambio_estado  Estado -> Resuelta  tecnico@corp.local
+2026-06-16 22:36:17  creacion       Incidencia creada   oficina@corp.local
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   oficina@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   admin@corp.local  
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   oficina@corp.local
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   tecnico@corp.local
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   admin@corp.local  
+2026-06-09 22:36:13  cambio_estado  Estado -> Cerrada   tecnico@corp.local
+2026-06-09 22:36:13  creacion       Incidencia creada   oficina@corp.local
+-- comprobacion de cifrado en reposo: el .enc no debe contener texto plano --
+OK: no se encuentra texto en claro en el backup cifrado
+### 8. Monitorizacion (metricas y disponibilidad)
+ts,cpu_pct,mem_pct,target,disponible,latencia_ms
+22:36:25,0.6,7.0,http://127.0.0.1:18080/lb-health,1,3.4
+22:36:25,0.6,7.0,http://127.0.0.1:18001/health,1,1.3
+22:36:25,0.6,7.0,http://127.0.0.1:18002/health,1,1.1
+22:36:26,4.3,7.0,http://127.0.0.1:18080/lb-health,1,1.7
+22:36:26,4.3,7.0,http://127.0.0.1:18001/health,1,1.1
+22:36:26,4.3,7.0,http://127.0.0.1:18002/health,1,1.2
+22:36:27,2.5,7.0,http://127.0.0.1:18080/lb-health,1,1.3
+22:36:27,2.5,7.0,http://127.0.0.1:18001/health,1,1.0
+22:36:27,2.5,7.0,http://127.0.0.1:18002/health,1,1.1
+22:36:28,5.5,6.9,http://127.0.0.1:18080/lb-health,1,1.7
+22:36:28,5.5,6.9,http://127.0.0.1:18001/health,1,1.3
+22:36:28,5.5,6.9,http://127.0.0.1:18002/health,1,1.5
+22:36:30,1.9,6.9,http://127.0.0.1:18080/lb-health,1,1.8
+22:36:30,1.9,6.9,http://127.0.0.1:18001/health,1,1.1
+22:36:30,1.9,6.9,http://127.0.0.1:18002/health,1,0.9
+# RESUMEN disponibilidad=100.00% muestras=15 objetivo>=99%
+### 9. Monitorizacion de disco
+[disk] 2026-06-16 22:36:31 umbral de alerta = 85%
+  OK       uso= 23% mont=/ -> OK
+  OK       uso=  1% mont=/tmp -> OK
+  OK       uso=  1% mont=/projects/sandbox -> OK
+  OK       uso=  0% mont=/dev -> OK
+  OK       uso=  0% mont=/dev/tty -> OK
+  OK       uso= 23% mont=/projects -> OK
+  OK       uso=  0% mont=/dev/shm -> OK
+
+===================================================
+ Laboratorio ejecutado. Evidencias en: evidencias/
+ Resultado de las pruebas de caja negra: RC=0
+===================================================
