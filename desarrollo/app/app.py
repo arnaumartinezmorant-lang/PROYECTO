@@ -132,6 +132,15 @@ def sesion_por_token(token):
     return {"uid": uid, "roles": roles_de(uid)}
 
 
+def borrar_sesion(token):
+    if not token:
+        return
+    conn = get_conn()
+    conn.execute("DELETE FROM sesion WHERE token=?", (token,))
+    conn.commit()
+    conn.close()
+
+
 def autenticar(email, password):
     conn = get_conn()
     row = conn.execute("SELECT * FROM usuario WHERE email=?", (email,)).fetchone()
@@ -302,7 +311,19 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         sess = self._session()
         if path == "/api/logout":
-            return self._send(200, {"mensaje": "Sesion cerrada"})
+            cookie = self.headers.get("Cookie", "")
+            for part in cookie.split(";"):
+                if "sid=" in part:
+                    borrar_sesion(part.split("sid=")[-1].strip())
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Set-Cookie", "sid=; HttpOnly; Path=/; Max-Age=0")
+            self.send_header("X-Served-By", APP_NODE)
+            payload = json.dumps({"mensaje": "Sesion cerrada"}).encode()
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
 
         if path == "/api/incidencias":
             if not sess:
@@ -332,13 +353,131 @@ class Handler(http.server.BaseHTTPRequestHandler):
         return self._send(404, {"error": "No encontrado"})
 
 
-INDEX_HTML = """<!doctype html><html lang=es><head><meta charset=utf-8>
+INDEX_HTML = """<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Intranet Corporativa - Gestion de Incidencias</title>
-<style>body{font-family:sans-serif;margin:40px;background:#f4f6f8}
-h1{color:#1d3557}.node{color:#457b9d;font-weight:bold}</style></head>
-<body><h1>Intranet Corporativa &mdash; Gestion de Incidencias</h1>
-<p>Servido por el nodo <span class=node>__NODE__</span> a traves del balanceador de carga.</p>
-<p>API REST disponible en <code>/api/...</code>. Estado del nodo: <code>/health</code>.</p>
+<style>
+:root{--p:#1d3557;--s:#457b9d;--bg:#eef2f6;--err:#e76f51}
+*{box-sizing:border-box}
+body{font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;background:var(--bg);color:#222}
+header{background:var(--p);color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+header h1{font-size:18px;margin:0}
+.badge{background:#fff;color:var(--p);border-radius:14px;padding:4px 10px;font-size:12px;font-weight:bold}
+main{max-width:1000px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.12);padding:16px}
+.card.full{grid-column:1/3}
+h2{font-size:15px;color:var(--p);margin:0 0 10px;border-bottom:1px solid #eee;padding-bottom:6px}
+label{display:block;font-size:12px;color:#555;margin:6px 0 2px}
+input,select{width:100%;padding:7px;border:1px solid #cbd5e0;border-radius:6px;font-size:13px}
+button{background:var(--s);color:#fff;border:0;border-radius:6px;padding:8px 12px;font-size:13px;cursor:pointer;margin-top:8px}
+button.sec{background:#6c757d}button.danger{background:var(--err)}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{border-bottom:1px solid #eee;padding:6px;text-align:left}
+th{color:#555}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#log{font-family:monospace;font-size:12px;background:#0f172a;color:#cbd5e0;border-radius:8px;padding:10px;height:140px;overflow:auto;white-space:pre-wrap}
+.pill{padding:2px 8px;border-radius:10px;font-size:11px;color:#fff}
+</style></head>
+<body>
+<header><h1>Intranet Corporativa &mdash; Gestion de Incidencias</h1>
+<div>Servido por <span class="badge" id="node">__NODE__</span></div></header>
+<main>
+  <section class="card">
+    <h2>Acceso</h2>
+    <div id="estado">No autenticado.</div>
+    <div id="loginbox">
+      <label>Correo</label><input id="lemail" placeholder="tecnico@corp.local">
+      <label>Contrasena</label><input id="lpass" type="password" placeholder="Tecnico123!">
+      <button onclick="login()">Entrar</button>
+    </div>
+    <button class="danger" id="logoutbtn" style="display:none" onclick="logout()">Cerrar sesion</button>
+  </section>
+  <section class="card">
+    <h2>Registrar usuario</h2>
+    <div class="row2"><div><label>Nombre</label><input id="rnom"></div>
+      <div><label>Apellidos</label><input id="rape"></div></div>
+    <label>Correo</label><input id="remail">
+    <label>Contrasena</label><input id="rpass" type="password">
+    <div class="row2">
+      <div><label>Departamento</label><select id="rdep"><option>Oficinas</option><option>Soporte</option><option>Administracion</option></select></div>
+      <div><label>Rol</label><select id="rrol"><option>Oficina</option><option>Tecnico</option><option>Administracion</option></select></div>
+    </div>
+    <button onclick="registro()">Registrar</button>
+  </section>
+  <section class="card full">
+    <h2>Incidencias</h2>
+    <button class="sec" onclick="cargar()">Actualizar lista</button>
+    <table id="tabla"><thead><tr><th>ID</th><th>Titulo</th><th>Prioridad</th><th>Estado</th><th>Creador</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+    <h2 style="margin-top:14px">Crear incidencia</h2>
+    <label>Titulo</label><input id="ctit">
+    <label>Descripcion</label><input id="cdesc">
+    <label>Prioridad</label><select id="cprio"><option value="1">1 - Alta</option><option value="2" selected>2 - Media</option><option value="3">3 - Baja</option></select>
+    <button onclick="crear()">Crear incidencia</button>
+  </section>
+  <section class="card full"><h2>Actividad (respuestas del servidor)</h2><div id="log"></div></section>
+</main>
+<script>
+let roles=[];
+function $(id){return document.getElementById(id);}
+function log(m){const l=$('log');l.textContent+=m+"\\n";l.scrollTop=l.scrollHeight;}
+async function api(method,path,body){
+  const o={method,headers:{}};
+  if(body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(body);}
+  const r=await fetch(path,o);
+  const node=r.headers.get('X-Served-By');if(node)$('node').textContent=node;
+  let d={};try{d=await r.json();}catch(e){}
+  log('['+method+' '+path+'] -> '+r.status+(node?(' ('+node+')'):'')+' '+JSON.stringify(d));
+  return {status:r.status,data:d};
+}
+async function login(){
+  const r=await api('POST','/api/login',{email:$('lemail').value,password:$('lpass').value});
+  if(r.status===200){roles=r.data.roles||[];setSesion($('lemail').value);cargar();}
+}
+async function logout(){await api('POST','/api/logout');roles=[];setSesion(null);
+  document.querySelector('#tabla tbody').innerHTML='';}
+function setSesion(email){
+  if(email){$('estado').innerHTML='Conectado como <b>'+email+'</b> (roles: '+roles.join(', ')+')';
+    $('loginbox').style.display='none';$('logoutbtn').style.display='inline-block';}
+  else{$('estado').textContent='No autenticado.';$('loginbox').style.display='block';$('logoutbtn').style.display='none';}
+}
+async function registro(){
+  await api('POST','/api/registro',{nombre:$('rnom').value,apellidos:$('rape').value,
+    email:$('remail').value,password:$('rpass').value,departamento:$('rdep').value,rol:$('rrol').value});
+}
+async function crear(){
+  await api('POST','/api/incidencias',{titulo:$('ctit').value,descripcion:$('cdesc').value,prioridad:parseInt($('cprio').value)});
+  $('ctit').value='';$('cdesc').value='';cargar();
+}
+const PRIO={1:'Alta',2:'Media',3:'Baja'};
+const COLOR={'Abierta':'#e76f51','En curso':'#e9c46a','Resuelta':'#2a9d8f','Cerrada':'#6c757d'};
+async function cargar(){
+  const r=await api('GET','/api/incidencias');
+  const tb=document.querySelector('#tabla tbody');tb.innerHTML='';
+  if(r.status!==200)return;
+  (r.data.incidencias||[]).forEach(function(i){
+    const tr=document.createElement('tr');
+    let acc='<button class="sec" onclick="hist('+i.id+')">Historial</button>';
+    if(roles.indexOf('Tecnico')>=0){
+      acc+=' <select id="s'+i.id+'"><option>En curso</option><option>Resuelta</option><option>Cerrada</option></select>'+
+           ' <button onclick="estado('+i.id+')">Aplicar</button>';
+    }
+    tr.innerHTML='<td>'+i.id+'</td><td>'+i.titulo+'</td><td>'+(PRIO[i.prioridad]||i.prioridad)+
+      '</td><td><span class="pill" style="background:'+(COLOR[i.estado]||'#457b9d')+'">'+i.estado+'</span></td>'+
+      '<td>'+i.creador+'</td><td>'+acc+'</td>';
+    tb.appendChild(tr);
+  });
+}
+async function estado(id){
+  await api('POST','/api/incidencias/'+id+'/estado',{estado:$('s'+id).value});cargar();
+}
+async function hist(id){
+  const r=await api('GET','/api/incidencias/'+id+'/historial');
+  if(r.status===200){log('  Historial #'+id+':');(r.data.historial||[]).forEach(function(h){
+    log('   - '+h.fecha+' | '+h.accion+' | '+(h.comentario||''));});}
+}
+api('GET','/whoami');
+</script>
 </body></html>"""
 
 
