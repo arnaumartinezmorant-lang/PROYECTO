@@ -1,50 +1,65 @@
 # =============================================================================
 # Laboratorio funcional: UNA maquina con varios contenedores Docker.
 # Reproduce de forma simplificada la arquitectura corporativa de la memoria:
-#   - lb       : balanceador de carga / proxy inverso (nginx)  -> rol de LB01/NLB
-#   - web01    : servidor web/aplicacion frontal               -> rol de WEB01
-#   - web02    : servidor web/aplicacion frontal (replica)     -> rol de WEB02
-#   - db       : base de datos                                  -> rol de SQL01
-#   - monitor  : monitorizacion (metricas y disponibilidad)
+#   - lb       : balanceador de carga / proxy inverso (nginx)  -> rol de LB01 / NLB
+#   - web01    : servidor web/aplicacion frontal               -> rol de WEB01 (IIS)
+#   - web02    : servidor web/aplicacion frontal (replica)     -> rol de WEB02 (IIS)
+#   - (la base de datos va dentro del volumen compartido dbdata -> rol de SQL01/Listener)
+#   - monitor  : monitorizacion (metricas y disponibilidad)    -> rol de PerfMon/PRTG
 #
-# Levantar:   docker compose up -d --build
-# Probar:     curl -k https://localhost/whoami   (alterna entre WEB01 y WEB02)
-# Parar web01:docker compose stop web01           (el servicio sigue por WEB02)
+# Arranque:   docker compose up -d --build
+# Probar:     curl -k https://localhost/whoami     (alterna entre WEB01 y WEB02)
+# Failover:   docker compose stop web01            (el servicio sigue por WEB02)
 # =============================================================================
 services:
 
   web01:
     build: { context: ., dockerfile: app/Dockerfile }
-    environment: { APP_NODE: WEB01, DB_PATH: /data/intranet.db, PORT: 8001 }
+    container_name: web01
+    environment: { APP_NODE: WEB01, DB_PATH: /data/intranet.db, PORT: "8001" }
+    # web01 es el que siembra la base de datos (usuarios + incidencias demo)
+    command: ["sh", "-c", "python seed.py && python -u app.py"]
     volumes: [ "dbdata:/data" ]
     networks: [ backend ]
 
   web02:
     build: { context: ., dockerfile: app/Dockerfile }
-    environment: { APP_NODE: WEB02, DB_PATH: /data/intranet.db, PORT: 8001 }
+    container_name: web02
+    environment: { APP_NODE: WEB02, DB_PATH: /data/intranet.db, PORT: "8001" }
+    # web02 solo arranca la aplicacion (comparte la misma base de datos que web01)
+    command: ["sh", "-c", "python -u app.py"]
     volumes: [ "dbdata:/data" ]
     networks: [ backend ]
     depends_on: [ web01 ]
 
   lb:
     image: nginx:alpine
+    container_name: lb
     ports: [ "443:443", "80:80" ]
     volumes:
       - "./lb/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
-      - "./lb/certs:/etc/nginx/certs:ro"
+      - "certs:/etc/nginx/certs"
+    # Genera un certificado autofirmado la primera vez y arranca nginx (HTTPS listo).
+    command: ["/bin/sh", "-c", "apk add --no-cache openssl >/dev/null 2>&1 || true; [ -f /etc/nginx/certs/intranet.crt ] || openssl req -x509 -newkey rsa:2048 -nodes -days 365 -keyout /etc/nginx/certs/intranet.key -out /etc/nginx/certs/intranet.crt -subj '/CN=intranet.corp.local' >/dev/null 2>&1; exec nginx -g 'daemon off;'"]
     networks: [ backend ]
     depends_on: [ web01, web02 ]
 
   monitor:
     image: python:3.11-slim
+    container_name: monitor
     working_dir: /monitor
+    environment:
+      TARGETS: "http://web01:8001/health,http://web02:8001/health"
+      ITERS: "20"
+      INTERVAL: "2"
     volumes: [ "./monitor:/monitor" ]
-    command: ["python", "monitor.py"]
+    command: ["python", "-u", "monitor.py"]
     networks: [ backend ]
-    depends_on: [ lb ]
+    depends_on: [ web01, web02 ]
 
 volumes:
   dbdata:
+  certs:
 
 networks:
   backend:
