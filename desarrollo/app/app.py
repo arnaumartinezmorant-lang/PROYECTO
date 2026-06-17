@@ -218,6 +218,34 @@ def historial(iid):
     return [dict(r) for r in rows]
 
 
+def metricas():
+    """Agrega metricas de negocio para el panel (dashboard)."""
+    conn = get_conn()
+
+    def scalar(q):
+        r = conn.execute(q).fetchone()
+        return r[0] if r and r[0] is not None else 0
+
+    tot_u = scalar("SELECT COUNT(*) FROM usuario")
+    tot_i = scalar("SELECT COUNT(*) FROM incidencia")
+    tot_b = scalar("SELECT COUNT(*) FROM backup")
+    abiertas = scalar("SELECT COUNT(*) FROM incidencia WHERE estado NOT IN ('Resuelta','Cerrada')")
+    estados = {r["estado"]: r["n"] for r in conn.execute(
+        "SELECT estado, COUNT(*) n FROM incidencia GROUP BY estado")}
+    prio = {str(r["prioridad"]): r["n"] for r in conn.execute(
+        "SELECT prioridad, COUNT(*) n FROM incidencia GROUP BY prioridad")}
+    tm = conn.execute(
+        "SELECT ROUND(AVG((julianday(fecha_cierre)-julianday(fecha_creacion))*24),2) v "
+        "FROM incidencia WHERE fecha_cierre IS NOT NULL").fetchone()["v"]
+    ranking = [{"tecnico": r["email"], "n": r["n"]} for r in conn.execute(
+        "SELECT u.email, COUNT(*) n FROM incidencia i JOIN usuario u ON u.id=i.gestor_id "
+        "GROUP BY u.email ORDER BY n DESC LIMIT 5")]
+    conn.close()
+    return {"usuarios": tot_u, "incidencias": tot_i, "backups": tot_b, "abiertas": abiertas,
+            "por_estado": estados, "por_prioridad": prio,
+            "tiempo_medio_horas": tm or 0, "ranking": ranking}
+
+
 # --------------------------------------------------------------------------- #
 # Servidor HTTP
 # --------------------------------------------------------------------------- #
@@ -264,6 +292,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             return self._send(200, b"OK", "text/plain")
         if path == "/whoami":
             return self._send(200, {"node": APP_NODE})
+        if path == "/api/metricas":
+            return self._send(200, metricas())
         if path == "/" or path == "/index.html":
             return self._send(200, INDEX_HTML.replace("__NODE__", APP_NODE).encode(), "text/html")
         if path == "/api/incidencias":
@@ -378,11 +408,27 @@ th{color:#555}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #log{font-family:monospace;font-size:12px;background:#0f172a;color:#cbd5e0;border-radius:8px;padding:10px;height:140px;overflow:auto;white-space:pre-wrap}
 .pill{padding:2px 8px;border-radius:10px;font-size:11px;color:#fff}
+.kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.kpi{flex:1;min-width:120px;background:#f1f5f9;border-radius:8px;padding:12px;text-align:center}
+.kv{font-size:24px;font-weight:bold;color:var(--p)}
+.kt{font-size:11px;color:#555;margin-top:2px}
+.barrow{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12px}
+.barrow .bl{width:130px}
+.bartrack{flex:1;background:#e9eef3;border-radius:6px;height:16px}
+.barfill{height:16px;border-radius:6px;min-width:2px}
 </style></head>
 <body>
 <header><h1>Intranet Corporativa &mdash; Gestion de Incidencias</h1>
 <div>Servido por <span class="badge" id="node">__NODE__</span></div></header>
 <main>
+  <section class="card full">
+    <h2>Panel de metricas <button class="sec" style="float:right;margin:0;padding:4px 10px" onclick="panel()">Actualizar</button></h2>
+    <div id="kpis" class="kpis"></div>
+    <div class="row2">
+      <div><b>Incidencias por estado</b><div id="bars" style="margin-top:6px"></div></div>
+      <div><b>Ranking de tecnicos (incidencias gestionadas)</b><div id="rank" style="margin-top:6px"></div></div>
+    </div>
+  </section>
   <section class="card">
     <h2>Acceso</h2>
     <div id="estado">No autenticado.</div>
@@ -451,6 +497,18 @@ async function crear(){
 }
 const PRIO={1:'Alta',2:'Media',3:'Baja'};
 const COLOR={'Abierta':'#e76f51','En curso':'#e9c46a','Resuelta':'#2a9d8f','Cerrada':'#6c757d'};
+function kpi(t,v){return '<div class="kpi"><div class="kv">'+v+'</div><div class="kt">'+t+'</div></div>';}
+function bar(label,val,total){var w=total?Math.round(100*val/total):0;var c=COLOR[label]||'#457b9d';
+  return '<div class="barrow"><span class="bl">'+label+' ('+val+')</span><div class="bartrack">'+
+    '<div class="barfill" style="width:'+w+'%;background:'+c+'"></div></div></div>';}
+async function panel(){
+  const r=await api('GET','/api/metricas');if(r.status!==200)return;const m=r.data;
+  $('kpis').innerHTML=kpi('Incidencias',m.incidencias)+kpi('Abiertas',m.abiertas)+
+    kpi('Usuarios',m.usuarios)+kpi('Tiempo medio (h)',m.tiempo_medio_horas)+kpi('Copias',m.backups);
+  var est=m.por_estado||{};var total=Object.keys(est).reduce(function(a,k){return a+est[k];},0);
+  $('bars').innerHTML=Object.keys(est).map(function(e){return bar(e,est[e],total);}).join('')||'(sin datos)';
+  $('rank').innerHTML=((m.ranking||[]).map(function(x){return '<div>'+x.tecnico+' &mdash; <b>'+x.n+'</b></div>';}).join(''))||'(sin datos)';
+}
 async function cargar(){
   const r=await api('GET','/api/incidencias');
   const tb=document.querySelector('#tabla tbody');tb.innerHTML='';
@@ -467,6 +525,7 @@ async function cargar(){
       '<td>'+i.creador+'</td><td>'+acc+'</td>';
     tb.appendChild(tr);
   });
+  panel();
 }
 async function estado(id){
   await api('POST','/api/incidencias/'+id+'/estado',{estado:$('s'+id).value});cargar();
@@ -476,7 +535,7 @@ async function hist(id){
   if(r.status===200){log('  Historial #'+id+':');(r.data.historial||[]).forEach(function(h){
     log('   - '+h.fecha+' | '+h.accion+' | '+(h.comentario||''));});}
 }
-api('GET','/whoami');
+api('GET','/whoami');panel();
 </script>
 </body></html>"""
 

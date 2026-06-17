@@ -56,7 +56,8 @@ Debes ver `lb`, `web01`, `web02` y `monitor` en estado *Up/running*.
 ## 2. Demostrar que el servicio funciona y el BALANCEO
 
 **Interfaz grafica:** abre el navegador en **https://localhost** (acepta el aviso del
-certificado autofirmado). Veras la intranet con su interfaz: iniciar sesion, registrar
+certificado autofirmado). Veras la intranet con su interfaz: un **panel de metricas**
+(KPIs, incidencias por estado y ranking de tecnicos), iniciar sesion, registrar
 usuarios, listar/crear incidencias, cambiar su estado (si eres tecnico) y ver el
 historial. Arriba a la derecha se muestra que **nodo (WEB01/WEB02)** te esta sirviendo,
 asi que el balanceo se ve en vivo al recargar.
