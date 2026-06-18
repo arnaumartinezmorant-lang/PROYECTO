@@ -9,7 +9,7 @@ Datos canonicos (cópialos tal cual en las etiquetas):
 - LB01 `10.10.40.10` (VIP `10.10.40.5`) | WEB01 `10.10.40.11` | WEB02 `10.10.40.12`
 - DC1 `10.10.10.11` | DC2 `10.10.10.12` | SQL01 `10.10.10.21` | SQL02 `10.10.10.22`
   | endpoint HAProxy `10.10.10.20` | BKP01 `10.10.10.31`
-- Puertos: HTTPS 443 | SQL 5432 | LDAPS 636 | DNS 53 | Kerberos 88 | SMB 445 | replica AG 5432
+- Puertos: HTTPS 443 | SQL 5432 | LDAPS 636 | DNS 53 | Kerberos 88 | NFS 2049 | replica AG 5432
   | SSH 22 y SSH 22 (SOLO desde VLAN 30)
 
 Consejo draw.io: menu **More Shapes... > Networking** (activa "Cisco", "Networking/Rack")
@@ -38,7 +38,7 @@ Vista de alto nivel: quien habla con quien, con protocolo/puerto en las lineas.
                           /                    \   5432 (replica)
                          v                      v
                   [ SQL01 ]  <--- AG --->  [ SQL02 ]   (Backend VLAN10)
-                         |  445 (SMB)
+                         |  445 (NFS)
                          v
                   [ BKP01 Backup ] ---> copia offsite cifrada
    [ DC1 ] [ DC2 ]  (FreeIPA + DNS, VLAN10)  <-- 636/88/53 desde WEB01/WEB02
@@ -51,7 +51,7 @@ Pasos:
 4. Dos cajas WEB01 y WEB02 bajo el LB. Flechas LB->WEB01 y LB->WEB02 con "HTTPS 443".
 5. Caja "endpoint HAProxy 10.10.10.20". Flechas WEB01->endpoint HAProxy y WEB02->endpoint HAProxy con "5432".
 6. SQL01 y SQL02 bajo el endpoint HAProxy; flecha doble entre ellos "AG replica 5432".
-7. BKP01 a un lado; flecha SQL01->BKP01 "SMB 445" y BKP01-> "offsite cifrado".
+7. BKP01 a un lado; flecha SQL01->BKP01 "NFS 2049" y BKP01-> "offsite cifrado".
 8. DC1 y DC2 en un grupo; flecha WEB01/WEB02 -> DC "636/88/53".
 9. Caja "Administracion/DevOps (VLAN30/VPN)"; flecha hacia los servidores con "SSH 22".
 
