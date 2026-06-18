@@ -83,6 +83,22 @@ En Linux Bash, si `curl` da problemas, usa:
 
 ---
 
+## 2b. (Opción) Balanceo con HAProxy y panel gráfico
+
+Si quieres enseñar el balanceador **HAProxy** (el nombre que usa el diseño) con un
+**cuadro de mando visual**, arranca el laboratorio con el override de HAProxy:
+```bash
+docker compose -f docker-compose.yml -f docker-compose.haproxy.yml up -d
+```
+- Balanceo: `curl http://localhost:8080/whoami` (repite; alterna WEB01/WEB02).
+- **Panel gráfico de HAProxy:** abre `http://localhost:8404` en el navegador. Verás los dos
+  servidores, su estado (UP/DOWN) y las sesiones que atiende cada uno.
+- Failover en vivo: `docker compose stop web01` → en el panel WEB01 pasa a **DOWN** y todo el
+  tráfico va a WEB02 sin corte. `docker compose start web01` → vuelve a **UP**.
+
+> Nginx (servicio `lb`, en `https://localhost`) y HAProxy (`http://localhost:8080`) hacen lo
+> mismo: balancear el frontal. Usa el que prefieras para la demo; HAProxy añade el panel visual.
+
 ## 3. Demostrar la COMUNICACION entre componentes
 
 ```bash

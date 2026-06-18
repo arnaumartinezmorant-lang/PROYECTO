@@ -1,0 +1,22 @@
+# =============================================================================
+# Override OPCIONAL para demostrar el balanceo con HAProxy (el del diseno) en
+# lugar de / ademas de Nginx, con su PANEL de estadisticas grafico.
+#
+# Uso:
+#   docker compose -f docker-compose.yml -f docker-compose.haproxy.yml up -d
+# Probar:
+#   curl http://localhost:8080/whoami        -> alterna WEB01 / WEB02
+#   navegador: http://localhost:8404         -> panel de estadisticas de HAProxy
+#   docker compose stop web01                -> el panel marca WEB01 DOWN y sigue por WEB02
+# =============================================================================
+services:
+  haproxy:
+    image: haproxy:2.9-alpine
+    container_name: haproxy
+    ports:
+      - "8080:80"     # balanceo
+      - "8404:8404"   # panel de estadisticas
+    volumes:
+      - "./lb/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+    networks: [ backend ]
+    depends_on: [ web01, web02 ]
