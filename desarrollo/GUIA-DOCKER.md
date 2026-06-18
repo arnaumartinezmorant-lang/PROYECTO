@@ -18,11 +18,25 @@ monitorizacion e informes. Todos los comandos son copiar y pegar.
 Los contenedores se comunican por una **red interna de Docker** llamada `backend`
 (equivale a la VLAN del diseno). Se hablan por su nombre: `web01`, `web02`, `lb`.
 
+## Tiempo estimado para montarlo todo
+
+| Tarea | Tiempo |
+|-------|--------|
+| Instalar Docker Desktop (solo la primera vez) | 10-20 min |
+| Descargar/clonar el proyecto | 1-2 min |
+| `docker compose up -d --build` (1a vez: descarga imagenes + build) | 3-8 min |
+| Recorrer toda la demostracion (pasos 2-7) | 10-15 min |
+| **Total con Docker ya instalado** | **~15-25 min** |
+| **Total desde cero (instalando Docker)** | **~30-45 min** |
+
+> A partir de la segunda vez, `docker compose up -d` arranca en **segundos** (las imagenes
+> ya estan descargadas y construidas).
+
 ---
 
 ## 0. Requisitos (una sola vez)
 
-1. Instalar **Docker Desktop** (Linux/Mac) o Docker Engine (Linux): https://docs.docker.com/get-docker/
+1. Instalar **Docker Desktop** (Windows/Mac) o Docker Engine (Linux): https://docs.docker.com/get-docker/
 2. Comprobar que funciona:
    ```bash
    docker --version
@@ -75,7 +89,7 @@ curl -k https://localhost/
 # Que nodo responde cada vez (debe alternar WEB01 / WEB02)
 for i in 1 2 3 4 5 6; do curl -k -s https://localhost/whoami; echo; done
 ```
-En Linux Bash, si `curl` da problemas, usa:
+En Windows (PowerShell), si prefieres no usar curl:
 ```powershell
 1..6 | % { (Invoke-WebRequest -Uri https://localhost/whoami -SkipCertificateCheck).Content }
 ```
@@ -234,6 +248,30 @@ docker compose exec db psql -U postgres -d intranet_corporativa -c "\du"   # lis
 > cadena de conexion y el driver (psycopg2); en el laboratorio se mantiene SQLite por
 > simplicidad y reproducibilidad. Este paso solo demuestra que el PostgreSQL real arranca
 > y acepta el esquema con sus roles.
+
+---
+
+## Checklist: qué pide el proyecto y dónde se cumple
+
+| Lo que pide el profesor / proyecto | Dónde se cumple | Cómo demostrarlo |
+|------------------------------------|-----------------|------------------|
+| Coherencia de IPs, puertos, VLANs y servidores | Memoria apt. 11.5 + `red/plan-direccionamiento.md` + diagramas | Enseñar la tabla y los diagramas |
+| Qué hace cada servidor (IP, servicios, comunicación) | Memoria 11.5 (inventario) + diagramas 10/11 | Tabla de servidores |
+| Proyecto **funcional y demostrable** | Laboratorio Docker | Pasos 1-2 (`docker compose up`) |
+| Balanceo de carga | `lb` (Nginx) / HAProxy | Pasos 2 y 2b |
+| **Alta disponibilidad (failover)** | Nginx/HAProxy + 2 web | Paso 4 (+ panel HAProxy en 2b) |
+| Interfaz y gestión de incidencias (RBAC) | App web | `https://localhost` (login, incidencias, panel) |
+| Scripts (backup, restore, logs, disco, alta usuario) | `desarrollo/scripts/` | Pasos 6 y 7 |
+| Cifrado (AES en copias; LUKS/pgcrypto en diseño) | `scripts/backup.sh`, `db/postgresql-setup.sql` | Paso 6 (la copia `.enc` no tiene texto en claro) |
+| Base de datos + endpoint único (HAProxy/Listener) | SQLite (lab) / PostgreSQL (apt. 10) | Paso 10 (PostgreSQL real opcional) |
+| Directorio y políticas por rol (FreeIPA/HBAC) | `scripts/new-empleado-ldap.sh` + diseño | Mostrar el script y el apt. 12 |
+| **Plan de pruebas real con evidencias y métricas** | `pruebas/run_tests.py` + `evidencias/` | Paso 5 (12/12) + `EVIDENCIAS.md` |
+| Monitorización / explotación de la información | `monitor/` + `observabilidad/informes-sql.sql` | Paso 7 + panel de métricas |
+| Conclusiones propias | Memoria (apartado Conclusiones) | — |
+
+> Consejo para la defensa: durante los pasos 2, 4 y 5 **haz capturas de pantalla** (interfaz,
+> panel de HAProxy con WEB01 DOWN, salida de las 12 pruebas) y añádelas a la memoria como
+> evidencias. La carpeta `evidencias/` ya trae salidas reales regenerables con `bash run-lab.sh`.
 
 ---
 
