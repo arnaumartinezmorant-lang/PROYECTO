@@ -13,17 +13,17 @@ Historial_Incidencia y Backup) con control de acceso por roles (RBAC).
                  Internet / Usuarios
                          │  HTTPS 443
                  ┌───────▼────────┐
-                 │   lb (nginx)   │  Balanceador / proxy inverso  (rol de LB01 / NLB)
+                 │   lb (nginx)   │  Balanceador / proxy inverso  (rol de LB01 / HAProxy)
                  └───┬───────┬────┘
             ┌────────▼─┐   ┌─▼────────┐
-            │  web01   │   │  web02   │  Servidores web/aplicación (IIS en el diseño)
+            │  web01   │   │  web02   │  Servidores web/aplicación (Nginx en el diseño)
             └────┬─────┘   └────┬─────┘
                  └──────┬───────┘
                    ┌────▼────┐
-                   │   db    │  Base de datos (SQL Server en el diseño; SQLite en el lab)
+                   │   db    │  Base de datos (PostgreSQL en el diseño; SQLite en el lab)
                    └─────────┘
                    ┌─────────┐
-                   │ monitor │  Métricas y disponibilidad (PerfMon/PRTG en el diseño)
+                   │ monitor │  Métricas y disponibilidad (Prometheus/Grafana en el diseño)
                    └─────────┘
 ```
 
@@ -31,11 +31,11 @@ Correspondencia con el diseño corporativo (apartado 11 de la memoria):
 
 | Componente del lab | Rol corporativo | IP de diseño (ver red/plan-direccionamiento.md) |
 |--------------------|-----------------|--------------------------------------------------|
-| `lb` (nginx)       | LB01 balanceador / NLB | 10.10.40.10 (VIP 10.10.40.5) |
-| `web01`            | WEB01 (IIS)     | 10.10.40.11 |
-| `web02`            | WEB02 (IIS)     | 10.10.40.12 |
-| `db`               | SQL01 (SQL Server, Listener Always On) | 10.10.10.20:1433 |
-| `monitor`          | PerfMon + PRTG  | VLAN 30 (gestión) |
+| `lb` (nginx)       | LB01 balanceador / HAProxy | 10.10.40.10 (VIP 10.10.40.5) |
+| `web01`            | WEB01 (Nginx)     | 10.10.40.11 |
+| `web02`            | WEB02 (Nginx)     | 10.10.40.12 |
+| `db`               | SQL01 (PostgreSQL, endpoint HAProxy alta disponibilidad (Patroni)) | 10.10.10.20:5432 |
+| `monitor`          | Prometheus + Grafana  | VLAN 30 (gestión) |
 
 ## Cómo ejecutarlo
 
@@ -60,11 +60,11 @@ bash run-lab.sh
 ```
 desarrollo/
 ├── app/            Aplicación web (Python stdlib) + Dockerfile + seed de datos
-├── db/             init.sql (SQLite del lab) y sqlserver-setup.sql (diseño SQL Server: TDE, usuarios, Always On)
+├── db/             init.sql (SQLite del lab) y postgresql-setup.sql (diseño PostgreSQL: LUKS, usuarios, alta disponibilidad (Patroni))
 ├── lb/             nginx.conf (Docker) y balanceador.py (equivalente para el lab)
 ├── monitor/        Agente de monitorización (métricas y disponibilidad)
 ├── observabilidad/ informes-sql.sql (explotación de la información)
-├── scripts/        backup.sh (3-2-1 cifrado), restore.sh, rotate-logs.sh, disk-monitor.sh, New-EmpleadoAD.ps1
+├── scripts/        backup.sh (3-2-1 cifrado), restore.sh, rotate-logs.sh, disk-monitor.sh, new-empleado-ldap.sh
 ├── pruebas/        run_tests.py (caja negra) y whoami_sampler.py (reparto/failover)
 ├── red/            plan-direccionamiento.md (FUENTE ÚNICA DE VERDAD de IPs/VLANs/puertos)
 ├── evidencias/     Salidas reales de la última ejecución (ver EVIDENCIAS.md)
@@ -80,7 +80,7 @@ desarrollo/
   cualquier nodo valida el mismo token. Es el mismo motivo por el que en producción
   se usa estado compartido o afinidad de sesión.
 - **Cifrado en reposo:** el laboratorio cifra las copias con AES-256 (gpg). En el
-  diseño corporativo el equivalente es TDE de SQL Server (ver `db/sqlserver-setup.sql`).
-- **Base de datos:** el diseño usa Microsoft SQL Server; para que el lab sea 100%
+  diseño corporativo el equivalente es LUKS de PostgreSQL (ver `db/postgresql-setup.sql`).
+- **Base de datos:** el diseño usa PostgreSQL; para que el lab sea 100%
   reproducible en cualquier equipo se usa SQLite con el mismo esquema y consultas SQL
   estándar. El acceso a datos está aislado para poder cambiar de motor.

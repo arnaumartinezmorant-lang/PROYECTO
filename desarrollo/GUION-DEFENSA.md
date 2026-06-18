@@ -72,11 +72,11 @@ sqlite3 app/data/intranet.db < observabilidad/informes-sql.sql   # informes de n
 Que mostrar: disponibilidad **100 %**; informe de incidencias por estado, tiempo medio
 de resolucion y ranking de tecnicos. Evidencias: `08-monitor.txt`, `07-informes-sql.txt`.
 
-## 7. Scripts, cifrado SQL, Listener y GPO (1 min)
+## 7. Scripts, cifrado SQL, endpoint HAProxy y GPO (1 min)
 Abre y comenta brevemente:
-- `db/sqlserver-setup.sql` -> TDE (cifrado), usuarios de minimo privilegio y **Listener**
-  Always On (10.10.10.20:1433).
-- `scripts/New-EmpleadoAD.ps1` -> alta automatica de usuario en AD con grupo y NTFS.
+- `db/postgresql-setup.sql` -> LUKS (cifrado), usuarios de minimo privilegio y **endpoint HAProxy**
+  alta disponibilidad (Patroni) (10.10.10.20:5432).
+- `scripts/new-empleado-ldap.sh` -> alta automatica de usuario en AD con grupo y NTFS.
 - `scripts/` -> backup, restore, rotacion de logs, monitor de disco.
 
 ## 8. Cierre (30 s)
@@ -87,10 +87,10 @@ Abre y comenta brevemente:
 ---
 
 ## Preguntas probables y respuesta corta
-- **"Por que SQLite y no SQL Server?"** Para que el laboratorio sea reproducible sin
-  dependencias. El diseno corporativo es SQL Server con TDE y Always On, y el guion esta
-  en `db/sqlserver-setup.sql`. El acceso a datos esta aislado para poder cambiar de motor.
-- **"El 3389 estaba mal, ¿como queda?"** Solo se permite RDP/WinRM desde la VLAN 30
+- **"Por que SQLite y no PostgreSQL?"** Para que el laboratorio sea reproducible sin
+  dependencias. El diseno corporativo es PostgreSQL con LUKS y alta disponibilidad (Patroni), y el guion esta
+  en `db/postgresql-setup.sql`. El acceso a datos esta aislado para poder cambiar de motor.
+- **"El 22 estaba mal, ¿como queda?"** Solo se permite SSH desde la VLAN 30
   (gestion) o VPN; nunca desde Internet, DMZ ni usuarios (apartado 11.5 y regla R08).
 - **"¿Que problema real tuvisteis?"** Al balancear se perdia la sesion; lo resolvimos
   guardando las sesiones en la base de datos compartida.
