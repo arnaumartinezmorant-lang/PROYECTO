@@ -12,7 +12,7 @@ Variables de entorno:
   DB_PATH    Ruta del fichero SQLite. Por defecto ./data/intranet.db
   PORT       Puerto de escucha. Por defecto 8001.
 
-En el diseno corporativo la base de datos es Microsoft SQL Server (ver memoria).
+En el diseno corporativo la base de datos es PostgreSQL (ver memoria).
 Para el laboratorio reproducible se usa SQLite, que expone el mismo esquema y las
 mismas consultas SQL estandar; el codigo de acceso a datos esta aislado en DAO.
 """
@@ -253,7 +253,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
     server_version = "IntranetCorp/1.0"
 
     def log_message(self, fmt, *args):
-        # Log accesible (formato tipo IIS) hacia stdout -> se recoge como evidencia
+        # Log accesible (formato tipo Nginx) hacia stdout -> se recoge como evidencia
         print("%s - %s [%s] node=%s %s" % (
             self.client_address[0], "-", self.log_date_time_string(), APP_NODE, fmt % args))
 

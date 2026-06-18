@@ -21,14 +21,6 @@ Todos los valores (VLANs, IPs y puertos) coinciden con el apartado **11.5** de l
 y con `../plan-direccionamiento.md`. Colores por VLAN: DMZ naranja, Backend azul,
 Gestion verde, Usuarios gris, WiFi invitados amarillo.
 
-## Alineacion con la guia de la fase de diseno
-Los diagramas siguen lo recomendado en los apuntes de la asignatura (fase de diseno):
-nodos principales (servidores, balanceador, router de salida a Internet, firewall),
-relaciones entre nodos con su protocolo y puerto, zonas de red (DMZ, red interna y red
-de administracion) y actores (usuarios externos, internos y administracion/DevOps).
-El esbozo (apartado 10) da la vista general por zonas sin IPs; el diagrama de red
-(apartado 11.3) anade el direccionamiento concreto.
-
 ## Como sustituir las imagenes antiguas en la memoria
 1. Abre `INFRAESTRUCTURA RED.odt` en LibreOffice.
 2. Borra la imagen antigua del apartado correspondiente.

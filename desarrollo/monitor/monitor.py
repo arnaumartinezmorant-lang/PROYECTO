@@ -3,7 +3,7 @@
 Agente de monitorizacion (explotacion de la informacion / observabilidad).
 Recoge metricas del sistema (CPU, memoria, disco) y comprueba la disponibilidad
 de los nodos y del balanceador. Escribe metricas en formato linea y un resumen.
-Equivale a PerfMon + sensores PRTG del diseno corporativo.
+Equivale a Prometheus + sensores Grafana del diseno corporativo.
 
 Variables:  TARGETS (lista coma de URLs /health), ITERS (nº de muestras), INTERVAL.
 """

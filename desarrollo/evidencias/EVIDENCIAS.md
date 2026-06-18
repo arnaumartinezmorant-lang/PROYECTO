@@ -15,7 +15,7 @@ ejecución de referencia: 16/06/2026.
 | 7 | Informes de explotación (SQL) | `salidas/07-informes-sql.txt` | Tiempo medio de resolución ≈ 6,12 h; ranking de técnicos; cifrado verificado |
 | 8 | Monitorización | `salidas/08-monitor.txt` | Disponibilidad = **100 %** (objetivo ≥ 99 %) |
 | 9 | Monitorización de disco | `salidas/09-disco.txt` | Uso por punto de montaje + alerta por umbral |
-| - | Logs de acceso de los nodos | `logs/web01.log`, `logs/web02.log`, `logs/lb.log` | Peticiones HTTP por nodo (formato tipo IIS) |
+| - | Logs de acceso de los nodos | `logs/web01.log`, `logs/web02.log`, `logs/lb.log` | Peticiones HTTP por nodo (formato tipo Nginx) |
 | - | Copias cifradas | `backups/local/*.enc`, `backups/offsite/*.enc` | Ficheros binarios cifrados (sin texto en claro) |
 
 ## Métricas clave (medidas, no estimadas)

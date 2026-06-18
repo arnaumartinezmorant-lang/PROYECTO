@@ -1,6 +1,6 @@
 -- Esquema de la intranet de incidencias (laboratorio reproducible, SQLite).
 -- Refleja el modelo entidad-relacion de la memoria (apartados 15-17).
--- El diseno corporativo equivalente para Microsoft SQL Server esta en sqlserver-setup.sql
+-- El diseno corporativo equivalente para PostgreSQL esta en postgresql-setup.sql
 
 CREATE TABLE IF NOT EXISTS departamento (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,

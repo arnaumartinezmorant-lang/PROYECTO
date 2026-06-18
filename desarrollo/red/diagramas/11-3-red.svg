@@ -44,7 +44,7 @@
 <text x="682.5" y="371.5" text-anchor="middle" font-size="12" fill="#222">SQL02</text>
 <text x="682.5" y="386.5" text-anchor="middle" font-size="12" fill="#222">10.10.10.22</text>
 <rect x="530" y="404" width="200" height="38" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
-<text x="630" y="429" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">Listener 10.10.10.20 (1433)</text>
+<text x="630" y="429" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">HAProxy 10.10.10.20 (5432)</text>
 <rect x="745" y="352" width="100" height="42" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
 <text x="795" y="371.5" text-anchor="middle" font-size="12" fill="#222">BKP01</text>
 <text x="795" y="386.5" text-anchor="middle" font-size="12" fill="#222">10.10.10.31</text>
@@ -82,18 +82,18 @@
 <text x="182.3" y="357.5" text-anchor="middle" font-size="11" fill="#333333">443</text>
 <line x1="255" y1="391.491" x2="530" y2="414.598" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="378.5" y="392.044" width="28" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="392.5" y="403.044" text-anchor="middle" font-size="11" fill="#333333">1433</text>
+<text x="392.5" y="403.044" text-anchor="middle" font-size="11" fill="#333333">5432</text>
 <line x1="255" y1="380.85" x2="635" y2="327.65" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="413.5" y="343.25" width="63" height="16" fill="white" stroke="none" opacity="0.9"/>
 <text x="445" y="354.25" text-anchor="middle" font-size="11" fill="#333333">636/88/53</text>
 <line x1="625" y1="373" x2="635" y2="373" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <line x1="635" y1="373" x2="625" y2="373" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="616" y="362" width="28" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="630" y="373" text-anchor="middle" font-size="11" fill="#333333">5022</text>
+<text x="630" y="373" text-anchor="middle" font-size="11" fill="#333333">5432</text>
 <line x1="625" y1="373" x2="745" y2="373" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
-<rect x="674.5" y="362" width="21" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="685" y="373" text-anchor="middle" font-size="11" fill="#333333">445</text>
+<rect x="671" y="362" width="28" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="685" y="373" text-anchor="middle" font-size="11" fill="#333333">2049</text>
 <line x1="905" y1="336.27" x2="625" y2="323.215" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" stroke-dasharray="6 4"/>
-<rect x="733.5" y="318.742" width="63" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="765" y="329.742" text-anchor="middle" font-size="11" fill="#b85450">3389/5985</text>
+<rect x="737" y="318.742" width="56" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="765" y="329.742" text-anchor="middle" font-size="11" fill="#b85450">22 (SSH)</text>
 </svg>

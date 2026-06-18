@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Monitorizacion de espacio en disco con alerta temprana (tarea 5 de automatizacion).
-# Lanza una alerta si el uso supera el umbral. Equivalente a Get-Volume (PowerShell).
+# Lanza una alerta si el uso supera el umbral. Equivalente a df -h (Bash).
 set -euo pipefail
 UMBRAL="${1:-85}"   # porcentaje
 echo "[disk] $(date '+%F %T') umbral de alerta = ${UMBRAL}%"
