@@ -5,7 +5,7 @@
 #   2 soportes : disco local (backups/) y "frio" (offsite/)
 #   1 offsite  : carpeta offsite/ (simula Azure Archive / NAS remoto)
 # El fichero se cifra con AES-256 (openssl) para reproducir el cifrado en reposo
-# que en el diseno corporativo aporta TDE de SQL Server.
+# que en el diseno corporativo aporta LUKS de PostgreSQL.
 #
 # Uso: ./backup.sh [ruta_db] [dir_destino]
 # =============================================================================

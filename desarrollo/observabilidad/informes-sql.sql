@@ -1,5 +1,5 @@
 -- Informes de explotacion de la informacion (negocio) sobre la base de incidencias.
--- Compatibles con SQLite (lab) y, con cambios minimos de funciones de fecha, con SQL Server.
+-- Compatibles con SQLite (lab) y, con cambios minimos de funciones de fecha, con PostgreSQL.
 
 -- 1) Incidencias por estado
 SELECT estado, COUNT(*) AS total

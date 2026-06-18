@@ -5,15 +5,15 @@ Docker** (lo que recomendo el profesor) y demuestra su funcionamiento: balanceo,
 comunicacion entre componentes, alta disponibilidad (failover), copias de seguridad,
 monitorizacion e informes. Todos los comandos son copiar y pegar.
 
-## Que se monta y a que rol de Windows Server equivale
+## Que se monta y a que rol corporativo (Linux) equivale
 
-| Contenedor | Rol en el contenedor | Equivalente en el diseno (Windows Server) |
+| Contenedor | Rol en el contenedor | Equivalente en el diseno (Ubuntu Server) |
 |------------|----------------------|-------------------------------------------|
-| `lb`     | Balanceador / proxy inverso (nginx) | LB01 / NLB en Windows Server |
-| `web01`  | Servidor web + aplicacion           | WEB01 con IIS |
-| `web02`  | Servidor web + aplicacion (replica) | WEB02 con IIS |
-| volumen `dbdata` | Base de datos compartida    | SQL01 + Listener (SQL Server Always On) |
-| `monitor`| Metricas y disponibilidad           | PerfMon + PRTG |
+| `lb`     | Balanceador / proxy inverso (nginx) | LB01 / HAProxy en Ubuntu Server |
+| `web01`  | Servidor web + aplicacion           | WEB01 con Nginx |
+| `web02`  | Servidor web + aplicacion (replica) | WEB02 con Nginx |
+| volumen `dbdata` | Base de datos compartida    | SQL01 + endpoint HAProxy (PostgreSQL + Patroni) |
+| `monitor`| Metricas y disponibilidad           | Prometheus + Grafana |
 
 Los contenedores se comunican por una **red interna de Docker** llamada `backend`
 (equivale a la VLAN del diseno). Se hablan por su nombre: `web01`, `web02`, `lb`.
@@ -22,7 +22,7 @@ Los contenedores se comunican por una **red interna de Docker** llamada `backend
 
 ## 0. Requisitos (una sola vez)
 
-1. Instalar **Docker Desktop** (Windows/Mac) o Docker Engine (Linux): https://docs.docker.com/get-docker/
+1. Instalar **Docker Desktop** (Linux/Mac) o Docker Engine (Linux): https://docs.docker.com/get-docker/
 2. Comprobar que funciona:
    ```bash
    docker --version
@@ -75,7 +75,7 @@ curl -k https://localhost/
 # Que nodo responde cada vez (debe alternar WEB01 / WEB02)
 for i in 1 2 3 4 5 6; do curl -k -s https://localhost/whoami; echo; done
 ```
-En Windows PowerShell, si `curl` da problemas, usa:
+En Linux Bash, si `curl` da problemas, usa:
 ```powershell
 1..6 | % { (Invoke-WebRequest -Uri https://localhost/whoami -SkipCertificateCheck).Content }
 ```
@@ -95,7 +95,7 @@ docker compose exec web01 ls -l /data/intranet.db
 docker compose exec web02 ls -l /data/intranet.db
 ```
 **Que demuestra:** los contenedores se comunican por nombre dentro de la red `backend`
-y comparten el almacenamiento de datos (igual que WEB01/WEB02 hablan con el Listener SQL).
+y comparten el almacenamiento de datos (igual que WEB01/WEB02 hablan con el endpoint HAProxy).
 
 ---
 
@@ -194,9 +194,9 @@ docker compose down -v
 
 ---
 
-## 10. (Opcional, avanzado) Demostrar con un SQL Server real
+## 10. (Opcional, avanzado) Demostrar con un PostgreSQL real
 
-El diseno corporativo usa Microsoft SQL Server. Si quieres ensenar un SQL Server real
+El diseno corporativo usa PostgreSQL. Si quieres ensenar un PostgreSQL real
 en contenedor (Linux), puedes anadir este servicio en una prueba aparte:
 
 ```yaml
@@ -205,16 +205,16 @@ en contenedor (Linux), puedes anadir este servicio en una prueba aparte:
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "Cl4veFuerte!2025"
-    ports: [ "1433:1433" ]
+    ports: [ "5432:5432" ]
     networks: [ backend ]
 ```
-Y aplicar el guion `db/sqlserver-setup.sql` (TDE, usuarios y Listener):
+Y aplicar el guion `db/postgresql-setup.sql` (LUKS, usuarios y endpoint HAProxy):
 ```bash
-docker compose exec sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Cl4veFuerte!2025' -i /db/sqlserver-setup.sql
+docker compose exec sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Cl4veFuerte!2025' -i /db/postgresql-setup.sql
 ```
-> Nota: para que la aplicacion use SQL Server en lugar de SQLite habria que cambiar la
+> Nota: para que la aplicacion use PostgreSQL en lugar de SQLite habria que cambiar la
 > cadena de conexion y el driver; en el laboratorio se mantiene SQLite por simplicidad y
-> reproducibilidad. Este paso solo demuestra que el SQL Server real arranca y acepta el
+> reproducibilidad. Este paso solo demuestra que el PostgreSQL real arranca y acepta el
 > esquema con cifrado.
 
 ---

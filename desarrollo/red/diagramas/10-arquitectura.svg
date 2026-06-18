@@ -32,11 +32,11 @@
 <rect x="380" y="240" width="120" height="50" rx="8" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
 <text x="440" y="271" text-anchor="middle" font-size="12" fill="#222">WEB02</text>
 <rect x="585" y="170" width="200" height="42" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
-<text x="685" y="197" text-anchor="middle" font-size="12" fill="#222">DC1 (AD DS / DNS)</text>
+<text x="685" y="197" text-anchor="middle" font-size="12" fill="#222">DC1 (FreeIPA/DNS)</text>
 <rect x="805" y="170" width="200" height="42" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
-<text x="905" y="197" text-anchor="middle" font-size="12" fill="#222">DC2 (AD DS / DNS)</text>
+<text x="905" y="197" text-anchor="middle" font-size="12" fill="#222">DC2 (FreeIPA/DNS)</text>
 <rect x="585" y="232" width="420" height="40" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
-<text x="795" y="258" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">Listener SQL</text>
+<text x="795" y="258" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">HAProxy (BD)</text>
 <rect x="585" y="295" width="200" height="42" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
 <text x="685" y="322" text-anchor="middle" font-size="12" fill="#222">SQL01</text>
 <rect x="805" y="295" width="200" height="42" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
@@ -66,15 +66,15 @@
 <text x="403.704" y="230" text-anchor="middle" font-size="11" fill="#333333">443</text>
 <line x1="500" y1="262.803" x2="585" y2="259.69" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="528.5" y="250.246" width="28" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="542.5" y="261.246" text-anchor="middle" font-size="11" fill="#333333">1433</text>
+<text x="542.5" y="261.246" text-anchor="middle" font-size="11" fill="#333333">5432</text>
 <line x1="500" y1="255.452" x2="805" y2="206.914" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="621" y="220.183" width="63" height="16" fill="white" stroke="none" opacity="0.9"/>
 <text x="652.5" y="231.183" text-anchor="middle" font-size="11" fill="#333333">LDAPS 636</text>
 <line x1="760.625" y1="272" x2="721.094" y2="295" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <line x1="785" y1="316" x2="805" y2="316" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <line x1="805" y1="316" x2="785" y2="316" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
-<rect x="770.5" y="305" width="49" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="795" y="316" text-anchor="middle" font-size="11" fill="#333333">AG 5022</text>
+<rect x="760" y="305" width="70" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="795" y="316" text-anchor="middle" font-size="11" fill="#333333">repl. 5432</text>
 <line x1="722.258" y1="337" x2="757.742" y2="357" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="715.5" y="336" width="49" height="16" fill="white" stroke="none" opacity="0.9"/>
 <text x="740" y="347" text-anchor="middle" font-size="11" fill="#333333">SMB 445</text>
@@ -82,6 +82,6 @@
 <rect x="202" y="498.127" width="21" height="16" fill="white" stroke="none" opacity="0.9"/>
 <text x="212.5" y="509.127" text-anchor="middle" font-size="11" fill="#333333">VPN</text>
 <line x1="362.524" y1="495" x2="306.796" y2="290" stroke="#b85450" stroke-width="1.6" marker-end="url(#arr)" stroke-dasharray="6 4"/>
-<rect x="261.16" y="381.5" width="147" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="334.66" y="392.5" text-anchor="middle" font-size="11" fill="#b85450">RDP 3389 / WinRM 5985</text>
+<rect x="313.66" y="381.5" width="42" height="16" fill="white" stroke="none" opacity="0.9"/>
+<text x="334.66" y="392.5" text-anchor="middle" font-size="11" fill="#b85450">SSH 22</text>
 </svg>

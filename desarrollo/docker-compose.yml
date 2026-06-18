@@ -1,11 +1,11 @@
 # =============================================================================
 # Laboratorio funcional: UNA maquina con varios contenedores Docker.
 # Reproduce de forma simplificada la arquitectura corporativa de la memoria:
-#   - lb       : balanceador de carga / proxy inverso (nginx)  -> rol de LB01 / NLB
-#   - web01    : servidor web/aplicacion frontal               -> rol de WEB01 (IIS)
-#   - web02    : servidor web/aplicacion frontal (replica)     -> rol de WEB02 (IIS)
-#   - (la base de datos va dentro del volumen compartido dbdata -> rol de SQL01/Listener)
-#   - monitor  : monitorizacion (metricas y disponibilidad)    -> rol de PerfMon/PRTG
+#   - lb       : balanceador de carga / proxy inverso (nginx)  -> rol de LB01 / HAProxy
+#   - web01    : servidor web/aplicacion frontal               -> rol de WEB01 (Nginx)
+#   - web02    : servidor web/aplicacion frontal (replica)     -> rol de WEB02 (Nginx)
+#   - (la base de datos va dentro del volumen compartido dbdata -> rol de SQL01/endpoint HAProxy)
+#   - monitor  : monitorizacion (metricas y disponibilidad)    -> rol de Prometheus/Grafana
 #
 # Arranque:   docker compose up -d --build
 # Probar:     curl -k https://localhost/whoami     (alterna entre WEB01 y WEB02)

@@ -11,13 +11,13 @@
 <text x="415" y="253.5" text-anchor="middle" font-size="12" fill="#222">Modulo web / aplicacion (x2)</text>
 <text x="415" y="268.5" text-anchor="middle" font-size="12" fill="#222">IIS - intranet de incidencias</text>
 <rect x="290" y="330" width="250" height="50" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
-<text x="415" y="361" text-anchor="middle" font-size="12" fill="#222">Acceso a datos (Listener SQL)</text>
+<text x="415" y="361" text-anchor="middle" font-size="12" fill="#222">Acceso a datos (HAProxy (BD))</text>
 <rect x="290" y="425" width="250" height="60" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
-<text x="415" y="453.5" text-anchor="middle" font-size="12" fill="#222">Base de datos SQL Server</text>
-<text x="415" y="468.5" text-anchor="middle" font-size="12" fill="#222">(esquema E-R, TDE)</text>
+<text x="415" y="453.5" text-anchor="middle" font-size="12" fill="#222">Base de datos PostgreSQL</text>
+<text x="415" y="468.5" text-anchor="middle" font-size="12" fill="#222">(esquema E-R, LUKS)</text>
 <rect x="590" y="225" width="190" height="60" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/>
 <text x="685" y="253.5" text-anchor="middle" font-size="12" fill="#222">Modulo de autenticacion</text>
-<text x="685" y="268.5" text-anchor="middle" font-size="12" fill="#222">Active Directory / DNS</text>
+<text x="685" y="268.5" text-anchor="middle" font-size="12" fill="#222">FreeIPA (LDAP/DNS)</text>
 <rect x="590" y="425" width="190" height="60" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
 <text x="685" y="453.5" text-anchor="middle" font-size="12" fill="#222">Copias 3-2-1</text>
 <text x="685" y="468.5" text-anchor="middle" font-size="12" fill="#222">+ cifrado AES-256</text>
@@ -32,7 +32,7 @@
 <text x="415" y="202.5" text-anchor="middle" font-size="11" fill="#333333">HTTP/HTTPS</text>
 <line x1="415" y1="285" x2="415" y2="330" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="401" y="296.5" width="28" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="415" y="307.5" text-anchor="middle" font-size="11" fill="#333333">1433</text>
+<text x="415" y="307.5" text-anchor="middle" font-size="11" fill="#333333">5432</text>
 <line x1="415" y1="380" x2="415" y2="425" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <line x1="550" y1="255" x2="590" y2="255" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="538.5" y="244" width="63" height="16" fill="white" stroke="none" opacity="0.9"/>
