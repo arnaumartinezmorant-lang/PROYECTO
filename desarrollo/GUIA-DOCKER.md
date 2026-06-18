@@ -197,25 +197,27 @@ docker compose down -v
 ## 10. (Opcional, avanzado) Demostrar con un PostgreSQL real
 
 El diseno corporativo usa PostgreSQL. Si quieres ensenar un PostgreSQL real
-en contenedor (Linux), puedes anadir este servicio en una prueba aparte:
+en contenedor, puedes anadir este servicio en una prueba aparte:
 
 ```yaml
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  db:
+    image: postgres:16
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Cl4veFuerte!2025"
+      POSTGRES_PASSWORD: "Cl4veFuerte!2025"
     ports: [ "5432:5432" ]
+    volumes:
+      - "./db/postgresql-setup.sql:/docker-entrypoint-initdb.d/10-setup.sql:ro"
     networks: [ backend ]
 ```
-Y aplicar el guion `db/postgresql-setup.sql` (LUKS, usuarios y endpoint HAProxy):
+Al arrancar, PostgreSQL ejecuta solo el guion `db/postgresql-setup.sql` (roles con
+minimo privilegio, pgcrypto y notas de Patroni + HAProxy). Para conectarte y comprobarlo:
 ```bash
-docker compose exec sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Cl4veFuerte!2025' -i /db/postgresql-setup.sql
+docker compose exec db psql -U postgres -d intranet_corporativa -c "\du"   # lista roles
 ```
 > Nota: para que la aplicacion use PostgreSQL en lugar de SQLite habria que cambiar la
-> cadena de conexion y el driver; en el laboratorio se mantiene SQLite por simplicidad y
-> reproducibilidad. Este paso solo demuestra que el PostgreSQL real arranca y acepta el
-> esquema con cifrado.
+> cadena de conexion y el driver (psycopg2); en el laboratorio se mantiene SQLite por
+> simplicidad y reproducibilidad. Este paso solo demuestra que el PostgreSQL real arranca
+> y acepta el esquema con sus roles.
 
 ---
 

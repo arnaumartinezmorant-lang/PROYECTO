@@ -26,7 +26,7 @@
 <text x="630.27" y="180" text-anchor="middle" font-size="11" fill="#333333">crea/consulta incidencias</text>
 <line x1="200" y1="420" x2="367.143" y2="330" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="217.071" y="364" width="133" height="16" fill="white" stroke="none" opacity="0.9"/>
-<text x="283.571" y="375" text-anchor="middle" font-size="11" fill="#333333">gestion (VPN + RDP)</text>
+<text x="283.571" y="375" text-anchor="middle" font-size="11" fill="#333333">gestion (VPN + SSH)</text>
 <line x1="550" y1="330" x2="712" y2="420" stroke="#333333" stroke-width="1.6" marker-end="url(#arr)"/>
 <rect x="550.5" y="364" width="161" height="16" fill="white" stroke="none" opacity="0.9"/>
 <text x="631" y="375" text-anchor="middle" font-size="11" fill="#333333">correo / notificaciones</text>
