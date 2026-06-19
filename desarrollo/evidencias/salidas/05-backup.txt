@@ -1,5 +1,5 @@
-[backup] 2026-06-16 22:36:25 iniciando copia de /projects/sandbox/PROYECTO/desarrollo/app/data/intranet.db
+[backup] 2026-06-19 19:58:51 iniciando copia de /projects/sandbox/PROYECTO/desarrollo/app/data/intranet.db
 [backup] dump consistente generado (61440 bytes)
-[backup] fichero cifrado (AES-256): /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/local/intranet_20260616_223625.bak.enc
-[backup] replica offsite: /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/offsite/intranet_20260616_223625.bak.enc
-[backup] 2026-06-16 22:36:25 copia 3-2-1 completada correctamente
+[backup] fichero cifrado (AES-256): /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/local/intranet_20260619_195851.bak.enc
+[backup] replica offsite: /projects/sandbox/PROYECTO/desarrollo/evidencias/backups/offsite/intranet_20260619_195851.bak.enc
+[backup] 2026-06-19 19:58:51 copia 3-2-1 completada correctamente

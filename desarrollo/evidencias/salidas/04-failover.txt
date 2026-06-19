@@ -4,7 +4,7 @@ Estado inicial: ambos nodos arriba
   peticion  3 -> servida por WEB02 (upstream 127.0.0.1:18002)
   peticion  4 -> servida por WEB01 (upstream 127.0.0.1:18001)
   reparto: WEB01=2, WEB02=2
->> Apagamos WEB01 (kill 425) ...
+>> Apagamos WEB01 (kill 428) ...
 Tras la caida de WEB01, el servicio SIGUE (debe responder solo WEB02):
   peticion  1 -> servida por WEB02 (upstream 127.0.0.1:18002)
   peticion  2 -> servida por WEB02 (upstream 127.0.0.1:18002)
